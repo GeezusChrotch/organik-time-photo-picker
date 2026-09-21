@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Organik Time — Guide</title>
+<style>
+:root{--green:#0f3d2e;--green2:#15513c;--cream:#f5efdc;--ink:#0c2b20;--line:#2a6a52}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-text-size-adjust:100%}
+header{background:var(--green);color:var(--cream);padding:22px 16px}
+header h1{margin:0 0 4px;font-size:1.5rem;letter-spacing:.3px}
+header p{margin:0;opacity:.85;font-size:.9rem}
+main{max-width:680px;margin:0 auto;padding:12px 16px 48px}
+section{background:#fffef8;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0}
+h2{margin:.2em 0 .6em;font-size:1.15rem;color:var(--green);border-bottom:2px solid var(--green);display:inline-block;padding-bottom:2px}
+h3{margin:.9em 0 .3em;font-size:1rem;color:var(--green2)}
+p{margin:.4em 0}
+ul{margin:.4em 0 .6em;padding-left:1.2em}
+li{margin:.25em 0}
+a{color:var(--green2);font-weight:600}
+code{background:#e9e2c9;border-radius:4px;padding:1px 5px;font-size:.9em}
+a.btn{display:inline-block;margin-top:6px;background:var(--green);color:var(--cream);text-decoration:none;padding:10px 14px;border-radius:8px;font-weight:700}
+small{color:#4a6b5e;display:block;margin-top:6px;font-size:.8rem}
+</style></head>
+<body>
+<header>
+<h1>Organik Time</h1>
+<p>Photo watchface for Pebble Time 2 · Version 1.0.20 · 200 × 228</p>
+</header>
+<main>
+<section><h2>Your photos. Your type. Your time.</h2><p>Organik Time turns your photos into a watchface that feels like yours. Pick a background, choose your typography, arrange the information you want, and save whole designs as presets.</p><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><img src="images/emery_alpine.png" width="200" height="228" alt="Alpine photo with a large serif clock and long date"><img src="images/emery_foliage.png" width="200" height="228" alt="Foliage background with a large clock and weather"><img src="images/emery_monochrome.png" width="200" height="228" alt="Black-and-white mountain photo with clock, date, weather, steps and solar times"></div><small>Native-resolution emulator captures with illustrative data. Sample photographs are not bundled; choose your own background. <a href="ASSET-CREDITS.md">Photo credits</a>.</small></section>
+
+<section>
+<h2>Choose a background</h2>
+<p>In Organik Time’s settings in the Pebble phone app tap <strong>Choose photo</strong> to use the phone's native picker.</p>
+<p>If the picker doesn't open (some Android Pebble app versions), use the browser importer:</p>
+<a class="btn" href="../">Open photo importer</a>
+<small>Choose a photo, tap Copy photo, paste back into settings, tap Import photo. Processing happens locally on your phone.</small>
+</section>
+
+<section>
+<h2>Presets</h2>
+<p><strong>Save current as preset</strong> captures the current preview and complete settings immediately — photo, all adjustments, fonts, colors, clock/date, layout, four data rows, weather preferences and tickers.</p>
+<p><strong>Save and apply</strong> is the single finishing action: it commits preset creations/deletions, closes the editor and transfers the background to the watch.</p>
+<p>Back before finishing discards the current session. Tap a saved screenshot to load it for editing. A green outline and ✓ Loaded badge identify the last loaded preset. It is sent to the watch only when you tap Save and apply.</p>
+</section>
+
+<section>
+<h2>Editing</h2>
+<ul>
+<li><strong>Photo quality:</strong> Photo = 100% dithering + 20% sharpening; Artwork = off. Sliders for dithering, sharpening, shadow lift (0–100%) and contrast (−50…+50) with live preview.</li>
+<li><strong>Dimming:</strong> 0–100% in 1% steps, live preview.</li>
+<li><strong>Black &amp; white:</strong> four-level grayscale (Pebble color screen).</li>
+<li><strong>Zoom:</strong> 100–300% with live preview; Focus X/Y place the crop.</li>
+</ul>
+<h3>20 bundled fonts</h3>
+<p>Roboto, Open Sans, Lato, Montserrat, Oswald, Raleway, Merriweather, Playfair Display, Nunito, Poppins, Roboto Slab, PT Sans, PT Serif, Source Sans 3, Source Serif 4, Inconsolata, Quicksand, Barlow Condensed, Rubik, Roboto Mono — all freely licensed and used for the phone preview too.</p>
+<h3>Time &amp; details</h3>
+<p>Time sizes: Small (42 px), Large (56 px), Extra large, Maximum — fitted per font so AM/PM never clips. Detail sizes: Small (≤14 px), Large (≤18 px), Maximum (≤22 px); lines shrink independently to fit weather, stocks, health, solar and date.</p>
+<p>Text color: all 64 Pebble Time 2 colors with a contrasting outline.</p>
+</section>
+
+<section>
+<h2>Information rows</h2>
+<p>Four interchangeable rows: Hidden, Date, Weather, Steps, Heart rate, Stock, or Sunrise / sunset / evening golden hour.</p>
+<p>Drag any row by its handle to reorder — keyboard arrow keys also work. Up to four distinct stock rows.</p>
+</section>
+
+<section>
+<h2>Data sources &amp; refresh</h2>
+<ul>
+<li><strong>Weather:</strong> Open-Meteo over the internet (city or phone location), normally refreshed every 30 minutes.</li>
+<li><strong>Stocks:</strong> Yahoo Finance quotes over the internet, normally refreshed every 15 minutes; quotes may be delayed.</li>
+<li><strong>Health:</strong> Pebble Health readings (steps, heart rate), redrawn on health updates and clock ticks. Heart rate is the latest available reading; the face does not force continuous measurement.</li>
+<li><strong>Solar:</strong> calculated on the phone from the weather location.</li>
+</ul>
+</section>
+
+<section>
+<h2>Privacy</h2>
+<p>Your photo is processed <strong>locally on your phone</strong> and is never uploaded. The face uses no analytics. Weather, city search and stock lookups use Open-Meteo and Yahoo Finance. Weather requests include the selected location; stock requests include the ticker or search text. These providers receive normal connection metadata. Health readings stay on the watch. The optional browser importer is hosted by GitHub Pages; its hosting service receives normal website requests, but the image is processed in your browser. Clipboard contents may sync according to your phone’s settings.</p>
+</section>
+
+<section>
+<h2>Photo size</h2>
+<p>Use <strong>200 × 228 px</strong> (or any larger image with the same <strong>50:57</strong> portrait ratio). Prefer PNG for direct pixel art, JPEG for photos. Keep the subject centered and leave quiet areas behind the clock and lower rows.</p>
+</section>
+
+<section><h2>Storage &amp; reconnecting</h2><p>Presets are stored locally in the Pebble phone app, with no fixed count limit beyond available storage. Clearing app data can remove them. Keep your own photo backups.</p><p>If the watch restarts while disconnected, its photo stays black until the phone reconnects and restores it. A failed photo transfer keeps the previous image.</p></section>
+<section><h2>Support</h2><p><a href="https://github.com/GeezusChrotch/organik-time-photo-picker/issues">Report an issue</a>. Include your watch model, phone OS, Pebble app version and what happened. Please do not post private photos or health information.</p></section>
+<p><a href="LICENSES.txt">Font and compression licenses</a> · <a href="THIRD-PARTY-NOTICES.md">Solar calculation notices</a></p>
+</main>
+</body></html>
