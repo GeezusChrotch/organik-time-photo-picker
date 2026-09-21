@@ -6,4 +6,6 @@ Native watch screenshots were captured from the Emery emulator running the relea
 - Alpine lake: Tom Schönmann, https://www.pexels.com/photo/landscape-with-a-mountain-lake-18430361/
 - License: https://www.pexels.com/license/ (free commercial use and modification; checked 2026-09-21).
 
-Screenshot files are original 200×228 PNG captures. Source JPEGs and settings are retained locally for reproducibility. No personal background or private account data is included in public materials.
+Screenshot files are original 200×228 PNG captures. Source JPEGs and settings are retained locally for reproducibility. The lead screenshot shows the user-selected personal background and actual watch layout, captured and published with explicit permission. The other images use the licensed sample photographs above.
+
+Lead image: emery_personal-stable.png, captured directly from the physical Pebble Time 2 via CloudPebble. The initial transition-frame capture was rejected and was not published.
