@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Organik Time Photo Picker</title>
+<style>
+:root{--g:#2e7d32;--gd:#1b5e20;--bg:#e8f5e9;--tx:#1b1b1b}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);padding:16px;min-height:100vh;-webkit-text-size-adjust:100%}
+h1{font-size:1.25rem;color:var(--gd);margin:0 0 12px}
+p{font-size:.9rem;line-height:1.4;margin:0 0 12px}
+.privacy{background:#fff;border-left:4px solid var(--g);padding:10px 12px;border-radius:4px;font-size:.85rem}
+label.file{display:block;width:100%;padding:14px;background:var(--g);color:#fff;border-radius:8px;text-align:center;font-size:1rem;font-weight:600;cursor:pointer;margin:12px 0}
+label.file input{display:block;width:100%;margin-top:10px}
+button{display:block;width:100%;padding:14px;margin:8px 0;font-size:1rem;font-weight:600;border:none;border-radius:8px;background:var(--g);color:#fff;cursor:pointer}
+button:disabled{background:#9e9e9e;cursor:not-allowed}
+button.sec{background:#fff;color:var(--gd);border:2px solid var(--g)}
+button.copy{background:#fff;color:var(--gd);border:2px solid var(--g)}
+#err{color:#c62828;font-size:.85rem;margin:8px 0;min-height:1.2em;display:none}
+#err.show{display:block}
+#msg{color:var(--gd);font-size:.85rem;margin:8px 0;min-height:1.2em;display:none}
+#msg.show{display:block}
+#preview{max-width:100%;max-height:300px;display:none;margin:12px auto;border-radius:8px;border:1px solid #ccc;background:#000}
+#preview.show{display:block}
+#ta{width:100%;height:120px;font-size:.75rem;font-family:monospace;margin:8px 0;display:none;border:1px solid #ccc;border-radius:4px;padding:8px}
+#ta.show{display:block}
+.info{font-size:.8rem;color:#555;margin-top:12px}
+</style>
+</head>
+<body>
+<h1>Organik Time Photo Picker</h1>
+<p class="privacy"><strong>Privacy:</strong> Photos stay on your device. No uploads, no analytics. The clipboard token may be synced by your OS.</p>
+<label class="file">Select Photo<input id="f" type="file" accept="image/*"></label>
+<div id="err"></div>
+<div id="msg"></div>
+<img id="preview" alt="Selected photo preview">
+<button id="cp" class="copy" disabled>Copy photo</button>
+<textarea id="ta" readonly aria-label="Photo token for manual copy"></textarea>
+<div class="info">After copying, return to Organik Time settings. Open “Picker not opening?”, paste into the box, and tap Import photo. Adjust your photo, then Save settings.</div>
+<script>
+(function(){
+'use strict';
+var MAXURL=300000,PREFIX='OTPHOTO1:',MAXTOKEN=PREFIX.length+MAXURL;
+var fileIn=document.getElementById('f'),btn=document.getElementById('cp'),errI=document.getElementById('err'),msgI=document.getElementById('msg'),img=document.getElementById('preview'),ta=document.getElementById('ta');
+var curUrl=null,lastValid=null,lastObjUrl=null,busy=false,seq=0;
+function setErr(m){errI.textContent=m||'';errI.className=m?'show':''}
+function setMsg(m){msgI.textContent=m||'';msgI.className=m?'show':''}
+function clearMsg(){setMsg('')}
+function setBusy(b){busy=b;btn.disabled=b||!curUrl||!curUrl.dataURL;fileIn.disabled=b}
+function releaseObj(){if(lastObjUrl){URL.revokeObjectURL(lastObjUrl);lastObjUrl=null}}
+function showSrc(url,obj){img.src=url;img.className='show';if(obj){releaseObj();lastObjUrl=url}else{releaseObj()}}
+function pickMime(canvas,isPng){try{if(isPng)return canvas.toDataURL('image/png')}catch(e){}
+try{return canvas.toDataURL('image/jpeg',0.9)}catch(e){return null}}
+function encode(canvas,isPng){
+  var longest=Math.max(canvas.width,canvas.height);
+  var target=longest;if(target>1000)target=1000;
+  var w=Math.round(canvas.width*(target/longest))||1,h=Math.round(canvas.height*(target/longest))||1;
+  var c=document.createElement('canvas');c.width=w;c.height=h;var ctx=c.getContext('2d');
+  var data=null;
+  for(var attempt=0;attempt<24;attempt++){
+    if(!isPng){ctx.fillStyle='#000';ctx.fillRect(0,0,w,h)}
+    else{ctx.clearRect(0,0,w,h)}
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.drawImage(canvas,0,0,canvas.width,canvas.height,0,0,w,h);
+    data=pickMime(c,isPng);
+    if(data&&data.length<=MAXURL)return data;
+    if(!data)return null;
+    w=Math.max(1,Math.floor(w*0.8));h=Math.max(1,Math.floor(h*0.8));
+    c.width=w;c.height=h;
+  }
+  return null;
+}
+function handle(file,mySeq){
+  var url=URL.createObjectURL(file),im=new Image();
+  im.onload=function(){
+    if(mySeq!==seq){URL.revokeObjectURL(url);return;}
+    try{finish(im,file.type==='image/png',mySeq);}catch(e){setErr('This photo could not be processed. Try a smaller JPG or PNG.');setBusy(false);}
+    URL.revokeObjectURL(url);
+  };
+  im.onerror=function(){URL.revokeObjectURL(url);if(mySeq===seq){setErr('Could not read this photo. Your previous selection is unchanged.');setBusy(false);}};
+  im.src=url;
+}
+function finish(c,isPng,mySeq){
+  if(mySeq!==seq)return;
+  var dataURL=encode(c,isPng);
+  if(mySeq!==seq)return;
+  if(!dataURL){setErr('Photo too large to fit token limit.');setBusy(false);return}
+  curUrl={dataURL:dataURL};
+  lastValid={dataURL:dataURL};
+  showSrc(dataURL,false);
+  ta.value=PREFIX+dataURL;ta.className='';
+  setErr('');setMsg('Ready. Tap Copy photo.');
+  setBusy(false);
+}
+fileIn.addEventListener('change',function(){
+  var f=fileIn.files&&fileIn.files[0];
+  if(!f)return;
+  var mySeq=++seq;
+  setErr('');clearMsg();setBusy(true);
+  btn.disabled=true;
+  handle(f,mySeq);
+  try{fileIn.value=''}catch(e){}
+});
+btn.addEventListener('click',function(){
+  if(!curUrl||busy)return;
+  var token=PREFIX+curUrl.dataURL;
+  if(token.length>MAXTOKEN){setErr('Token too long to copy.');return}
+  function manual(){
+    ta.value=token;ta.className='show';ta.focus();ta.select();
+    setErr('');setMsg('Copy blocked by browser. Text selected below — long-press and copy manually.');
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(token).then(function(){
+      setErr('');setMsg('Copied. Return to Organik Time settings and paste.');
+    }).catch(function(){manual()});
+  }else{manual()}
+});
+window.addEventListener('pagehide',releaseObj);
+})();
+</script>
+</body>
+</html>
